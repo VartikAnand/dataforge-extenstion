@@ -77,50 +77,85 @@ class DataForge {
   }
 
   // Method to process the logic for Tab 1 (LinkedIn URL Data)
-  async processTab1Logic(linkedinProfileUrl = null) {
-    try {
-      this.showLoading(true);
+// Method to process the logic for Tab 1 (LinkedIn URL Data)
+async processTab1Logic(linkedinProfileUrl = null) {
+  try {
+    this.showLoading(true);
 
-      const profileUrl =
-        linkedinProfileUrl || (await this.getAndDisplayLinkedInUrl());
-      if (!profileUrl) {
-        throw new Error("No valid LinkedIn URL found.");
-      }
-
-      // Ensure access token is updated
-      if (!this.accessToken) {
-        await this.retrieveAccessToken();
-      }
-
-      // Retrieve LinkedIn URL data
-      const linkedinUrlData = await this.retrieveLinkedInUrlData(
-        this.accessToken,
-        profileUrl
-      );
-
-      if (!linkedinUrlData) {
-        throw new Error("Failed to retrieve LinkedIn data.");
-      }
-
-      const storedData = JSON.parse(localStorage.getItem("linkedinData")) || {};
-
-      // Check if the profile URL already exists in stored data
-      if (!storedData[profileUrl]) {
-        // If profile URL does not exist, store the new data
-        storedData[profileUrl] = linkedinUrlData;
-        localStorage.setItem("linkedinData", JSON.stringify(storedData));
-        console.log("Profile URL data stored successfully.");
-      } else {
-        console.log("Profile URL already exists in localStorage.");
-      }
-
-      await this.updateUI(linkedinUrlData);
-    } catch (error) {
-      console.error("Error processing LinkedIn data:", error);
-    } finally {
-      this.showLoading(false);
+    const profileUrl =
+      linkedinProfileUrl || (await this.getAndDisplayLinkedInUrl());
+    if (!profileUrl) {
+      throw new Error("No valid LinkedIn URL found.");
     }
+
+    // Ensure access token is updated
+    if (!this.accessToken) {
+      await this.retrieveAccessToken();
+    }
+
+    // Retrieve LinkedIn URL data
+    const linkedinUrlData = await this.retrieveLinkedInUrlData(
+      this.accessToken,
+      profileUrl
+    );
+
+    if (!linkedinUrlData) {
+      throw new Error("Failed to retrieve LinkedIn data.");
+    }
+
+    const storedData = JSON.parse(localStorage.getItem("linkedinData")) || {};
+
+    // Check if the profile URL already exists in stored data
+    if (!storedData[profileUrl]) {
+      // If profile URL does not exist, store the new data
+      storedData[profileUrl] = linkedinUrlData;
+      localStorage.setItem("linkedinData", JSON.stringify(storedData));
+      console.log("Profile URL data stored successfully.");
+    } else {
+      console.log("Profile URL already exists in localStorage.");
+    }
+
+    await this.updateUI(linkedinUrlData);
+  } catch (error) {
+    console.error("Error processing LinkedIn data:", error);
+
+    // Display error message to the user in the center of the screen
+    this.showErrorMessage("Failed to retrieve LinkedIn data. Please check your dashboard for further information.");
+  } finally {
+    this.showLoading(false);
   }
+}
+
+// Method to show an error message in the center of the screen
+showErrorMessage(message) {
+  const errorDiv = $("<div></div>")
+    .attr("id", "error-message")
+    .text(message)
+    .css({
+      position: "fixed",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      background: "#ff4e4e",
+      color: "#fff",
+      padding: "20px",
+      borderRadius: "5px",
+      fontSize: "18px",
+      textAlign: "center",
+      zIndex: "9999",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    });
+
+  $("body").append(errorDiv);
+
+  // Automatically remove the message after 5 seconds (optional)
+  setTimeout(() => {
+    $("#error-message").fadeOut(500, () => {
+      $(this).remove();
+    });
+  }, 5000);
+}
+
 
   // Method to retrieve LinkedIn URL data based on access token and URL
   async retrieveLinkedInUrlData(accessToken, url, retries = 3) {
