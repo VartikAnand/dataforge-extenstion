@@ -22,3 +22,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 });
+
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'openExtension') {
+    chrome.action.openPopup(); // Opens the default popup defined in manifest
+  }
+});
