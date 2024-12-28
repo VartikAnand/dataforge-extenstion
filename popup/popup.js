@@ -136,8 +136,8 @@ showErrorMessage(message) {
       top: "50%",
       left: "50%",
       transform: "translate(-50%, -50%)",
-      background: "#ff4e4e",
-      color: "#fff",
+      color: "#ff4e4e",
+      // color: "#fff",
       padding: "20px",
       borderRadius: "5px",
       fontSize: "18px",
@@ -150,7 +150,7 @@ showErrorMessage(message) {
 
   // Automatically remove the message after 5 seconds (optional)
   setTimeout(() => {
-    $("#error-message").fadeOut(500, () => {
+    $("#error-message").fadeOut(100, () => {
       $(this).remove();
     });
   }, 5000);
@@ -158,7 +158,7 @@ showErrorMessage(message) {
 
 
   // Method to retrieve LinkedIn URL data based on access token and URL
-  async retrieveLinkedInUrlData(accessToken, url, retries = 3) {
+  async retrieveLinkedInUrlData(accessToken, url, retries = 4) {
     try {
       if (!url) {
         throw new Error("LinkedIn URL is invalid or missing.");
@@ -180,7 +180,7 @@ showErrorMessage(message) {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
           const response = await $.ajax({
-            url: "https://app.dataforge.so/api/v3/get-info",
+            url: "http://localhost:3000/api/v4/get-info",
             method: "POST",
             contentType: "application/json",
             headers: { Authorization: `${accessToken}` },
