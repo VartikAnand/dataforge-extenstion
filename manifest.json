@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Data-Froge",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "A simple linkedin data scraper",
   "icons": {
     "16": "assets/icons/icon.png",
