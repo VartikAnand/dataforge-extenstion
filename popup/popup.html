@@ -1,197 +1,502 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modern UI</title>
-    <link rel="stylesheet" href="popup.css" />
-    <script src="../libs/jquery-3.1.1.min.js"></script>
-    <style>
-      #tab-menu {
-        position: fixed;
-        bottom: 2px;
-        width: 350px;
 
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-        padding: 10px 0;
-        z-index: 1000;
-      }
-      #app-header {
-        position: fixed;
-        width: 350px;
-        /* top: 0;
-        left: 0; */
-        background-color: #333; /* Adjust background color */
-        color: white; /* Text color */
-        text-align: center;
-        padding: 10px 0;
-        font-size: 1.5rem; /* Adjust text size */
-        z-index: 1000; /* Ensure it appears above other elements */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add subtle shadow */
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern UI</title>
+  <script src="../libs/jquery-3.1.1.min.js"></script>
+  <style>
+    :root {
+      --tab-width: 400px;
+      --purple-light: #aca2cd;
+      --purple-dark: #415285;
+      --light-background: #f4f4f4;
+    }
+
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+    /* Basic body styles */
+    body {
+      width: 350px;
+      margin: 0;
+      min-height: 700px;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      background-color: var(--light-background);
+      padding: 0;
+    }
+
+    .app-container {
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    #dv-app-header {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background-color: var(--purple-dark);
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 1.2rem;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    #dv-tab-menu {
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      padding: 10px 0;
+      background-color: #fff;
+    }
+
+    .dv-tab-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      color: var(--purple-light);
+      font-size: 1rem;
+    }
+
+    .dv-tab-button.active {
+      color: var(--purple-dark);
+    }
+
+    #dv-tab-content {
+      flex: 1;
+      overflow-y: auto;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      text-align: center;
+    }
+
+    .dv-tab-content {
+      display: none;
+
+    }
+
+    .dv-tab-content.active {
+      display: block;
+    }
+
+    .dv-tab1-content {
+      display: none;
+      padding: 5px;
+    }
+
+    #dv-tab1-content button {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      color: var(--purple-dark);
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    #dv-tab1-content button:hover {
+      background-color: var(--purple-light);
+    }
+
+    .error-msg {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: red;
+      z-index: 9999;
+    }
+
+    .dv-loader,
+    .df-login-container {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #333;
+      z-index: 9999;
+      display: none;
+    }
+
+    .dv-loader {
+      /* left: 45%; */
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .dv-loader>span:first-child {
+      margin-left: 5px;
+      color: var(--purple-dark);
+      font-weight: 500;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .df-login-container {
+      border: 2px solid var(--purple-dark);
+      border-radius: 5px;
+      padding: 0px 20px 0 20px;
+    }
+
+    .dv-loader-circle {
+      width: 40px;
+      height: 40px;
+      border: 5px solid var(--purple-dark);
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      display: inline-block;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+      0% {
+        transform: rotate(0deg);
       }
 
-      #df-app {
-        position: relative;
-
+      100% {
+        transform: rotate(360deg);
       }
-    </style>
-  </head>
-  <body>
-    <div id="df-app">
-      <header id="app-header">Data Forge</header>
-      <div id="loading-indicator" style="display: none; margin-top: 40px">
-        <div class="skeleton-loader">
-          <!-- Skeleton for user profile -->
-          <div class="user-profile-section">
-            <div class="skeleton-picture"></div>
-            <div class="skeleton-text skeleton-name"></div>
-          </div>
-          <div class="skeleton-text skeleton-title"></div>
-          <div class="skeleton-text skeleton-summary"></div>
-          <div class="skeleton-text skeleton-summary"></div>
-          <div class="skeleton-text skeleton-summary"></div>
-  
-          <!-- Skeleton for work experience -->
-          <h4 class="skeleton-heading"></h4>
-          <div class="skeleton-experience">
-            <div class="skeleton-logo"></div>
-            <div class="skeleton-details">
-              <div class="skeleton-text"></div>
-              <div class="skeleton-text"></div>
-              <div class="skeleton-text"></div>
-            </div>
-          </div>
-          <div class="skeleton-experience">
-            <div class="skeleton-logo"></div>
-            <div class="skeleton-details">
-              <div class="skeleton-text"></div>
-              <div class="skeleton-text"></div>
-              <div class="skeleton-text"></div>
-            </div>
-          </div>
-          <div class="skeleton-experience">
-            <div class="skeleton-logo"></div>
-            <div class="skeleton-details">
-              <div class="skeleton-text"></div>
-              <div class="skeleton-text"></div>
-              <div class="skeleton-text"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-  
-      <div id="tab-content" style="padding-bottom: 50px; display: none">
-        <div id="tab1" class="tab-content" dataUrl="tab1">
-          <!-- User Information Section -->
-          <div class="user-info">
-            <div class="user-profile-section">
-              <img
-                id="user-picture"
-                src=""
-                alt="User Picture"
-                style="display: none"
-              />
-              <h4 id="user-name"></h4>
-            </div>
-            <div class="contact-info">
-    
-       
-            </div>
-            <p id="user-title"></p>
-            <p id="user-summary"></p>
-            <p id="user-skills"></p>
-            <a id="user-linkedin-url" href="#" target="_blank"></a>
-          </div>
-        
-          <!-- Work Experience Section -->
-          <div class="work-experience">
-            <div class="experience"></div>
-          </div>
-  
-          <!-- Education Section -->
-          <div class="education"></div>
-  
-          <!-- Contact Info -->
-        
-        </div>
-  
-        <div id="tab2" class="tab-content" dataUrl="tab2" style="display: none">
-          <div id="fetch-linkedin-data"></div>
-        </div>
-        <div id="tab3" class="tab-content" dataUrl="tab3" style="display: none">
-          Content for Tab 3
-        </div>
-      </div>
-  
-      <nav id="tab-menu">
-        <button class="tab-button" data-tab="tab1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-house"
-          >
-            <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
-            <path
-              d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
-            />
-          </svg>
-        </button>
-        <button class="tab-button" data-tab="tab2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-list"
-          >
-            <path d="M3 12h.01" />
-            <path d="M3 18h.01" />
-            <path d="M3 6h.01" />
-            <path d="M8 12h13" />
-            <path d="M8 18h13" />
-            <path d="M8 6h13" />
-          </svg>
-        </button>
-        <!-- 
-        <button class="tab-button" data-tab="tab3">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-settings"
-          >
-            <path
-              d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
-            />
-            <circle cx="12" cy="12" r="3" />
-          </svg>
-        </button> -->
-      </nav>
+    }
+
+
+
+    /* Linked Card Ui  */
+
+    .linkedin-card-header {
+      background-color: var(--purple-dark);
+      color: #ffffff;
+      padding: 20px;
+      position: relative;
+      height: 40px;
+    }
+
+    .linkedin-logo {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 24px;
+      height: 24px;
+    }
+
+    .linkedin-card-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid #ffffff;
+      position: absolute;
+      bottom: -40px;
+      left: 20px;
+      background-color: #e0e0e0;
+    }
+
+    .linkedin-card-body {
+      padding: 45px 20px 20px;
+      text-align: left;
+    }
+
+    .linkedin-card-name {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #333333;
+    }
+
+    .linkedin-job-title {
+      color: #666666;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .linkedin-connections {
+      font-size: 14px;
+      color: #666666;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .linkedin-connections::before {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230077b5'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E");
+      background-size: cover;
+    }
+
+    .linkedin-profile-link {
+      display: inline-block;
+      background-color: #0077b5;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+
+    .linkedin-profile-link:hover {
+      background-color: #005582;
+    };
+
+    #dv-tab2-content{
+      margin-top: 10px;
+    height: 700px;
+    }
+
+    .dv-email-container {
+
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    max-width: 400px;
+    margin: 10px auto;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    word-wrap: break-word;
+}
+
+.dv-email-container a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.dv-email-container a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+.dv-mobile-container {
+    background-color: #f4f4f9;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    max-width: 400px;
+    margin: 10px auto;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    word-wrap: break-word;
+}
+
+.dv-mobile-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.dv-mobile-link:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+.profile-container {
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+  font-family: 'Arial', sans-serif;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.profile-info h2 {
+  font-size: 24px;
+  margin: 0;
+  color: #333;
+}
+
+.profile-info .job-title {
+  font-size: 16px;
+  color: #777;
+}
+
+.social-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.social-link:hover {
+  text-decoration: underline;
+}
+
+.contact-info {
+  margin: 20px 0;
+}
+
+.dv-mobile-link {
+  font-size: 18px;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.dv-mobile-link:hover {
+  text-decoration: underline;
+}
+
+.work-experience-section {
+  margin-top: 20px;
+}
+
+.work-experience {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.company-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.experience-details .company-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--purple-light);
+  text-decoration: none;
+}
+
+.experience-details .company-name:hover {
+  text-decoration: underline;
+}
+
+.experience-details .title {
+  font-size: 16px;
+  color: #555;
+}
+
+.experience-details .employment-type {
+  font-size: 14px;
+  color: #888;
+}
+.chat-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            width: 300px;
+            transition: all 0.3s ease;
+        }
+        .chat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #aca2cd;
+            margin-right: 16px;
+            overflow: hidden;
+        }
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .chat-info {
+          max-width: 400px;
+            flex-grow: 1;
+        }
+        .profile-name {
+            font-weight: bold;
+            color: #415285;
+            margin-bottom: 4px;
+        }
+        .job-title {
+            font-size: 0.9em;
+            color: #666;
+            width: 200px;
+        }
+  </style>
+</head>
+
+<body>
+  <main class="app-container">
+    <div class="dv-loader">
+      <div class="dv-loader-circle"></div>
+      <span class="dv-loader-text"></span>
+    </div>
+    <span id="dv-error-msg" class="error-msg"></span>
+
+    <div class="df-login-container">
+      <button id="df-login-btn" class="dv-tab-button">Login Now</button>
     </div>
 
+    <div id="dv-app-header">DataForge</div>
+    <div id="dv-tab-content">
+   
+      <div id="dv-tab1-content" class="dv-tab-content active">
+        <div id="dv-data-card">
 
-    <script src="popup.js"></script>
-    <script type="module" src="../libs/store.js"></script>
-  </body>
+        </div>
+      </div>
+      <div id="dv-tab2-content" class="dv-tab-content">
+      </div>
+    </div>
+    
+ 
+    </div>
+    <nav id="dv-tab-menu">
+      <button class="dv-tab-button active" data-tab="tab1">Home</button>
+      <button class="dv-tab-button" data-tab="tab2">List</button> </nav>
+  </main>
+
+  <script src="popup.js"></script>
+  <script type="module" src="../libs/store.js"></script>
+</body>
+
 </html>

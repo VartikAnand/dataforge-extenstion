@@ -424,27 +424,29 @@ showErrorMessage(message) {
       return null;
     }
   }
-
+  startMonitoringLinkedInUrl() {
+    chrome.tabs.onActivated.addListener(async (activeInfo) => {
+      try {
+        const tab = await this.getTabDetails(activeInfo.tabId);
+        if (this.isValidLinkedInProfileUrl(tab.url)) {
+          this.linkedinUrl = this.cleanLinkedInUrl(tab.url);
+          console.log("Updated LinkedIn URL:", this.linkedinUrl);
+          await this.processTab1Logic(this.linkedinUrl);
+        } else {
+          this.linkedinUrl = "";
+        }
+      } catch (error) {
+        console.error("Error monitoring LinkedIn URL:", error);
+      }
+    });
+  }
   // Method to get the current URL of the active tab
   async getCurrentTabUrl() {
     return new Promise((resolve) => {
       try {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          let currentUrl = tabs[0]?.url || "No URL Found";
-
-          // Check if the URL is a LinkedIn profile
-          if (
-            currentUrl.includes("linkedin.com") &&
-            currentUrl.includes("/in/")
-          ) {
-            // Remove the trailing slash if it exists
-            currentUrl = currentUrl.endsWith("/")
-              ? currentUrl.slice(0, -1)
-              : currentUrl;
-            resolve(currentUrl);
-          } else {
-            resolve(null);
-          }
+          const currentUrl = tabs[0]?.url || null;
+          resolve(this.isValidLinkedInProfileUrl(currentUrl) ? this.cleanLinkedInUrl(currentUrl) : null);
         });
       } catch (error) {
         console.error("Error getting current tab URL:", error);
