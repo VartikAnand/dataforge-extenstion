@@ -24,7 +24,7 @@ class DataForge {
       summary: "",
     };
     this.loginPageUrl = "https://example.com/login";
-    this.apiTokenUrl = "http://localhost:3000/api/v1/get/token";
+    this.apiTokenUrl = "https://app.dataforge.so/api/v1/get/token";
     this.prodTokenUrl = "https://app.dataforge.so/api/v1/get/token";
     this.signInUrl = "https://app.dataforge.so/sign-in";
     this.checkAndSetAccessToken();
@@ -194,7 +194,7 @@ class DataForge {
     };
     try {
       const response = await jQuery.ajax({
-        url: `http://localhost:3000/api/v4/get/ce-social-list?page=${pageNumber}`,
+        url: `https://app.dataforge.so/api/v4/get/ce-social-list?page=${pageNumber}`,
         method: "GET",
         headers: headers,
         contentType: "application/json",
@@ -513,7 +513,7 @@ class DataForge {
     };
     try {
       const response = await jQuery.ajax({
-        url: "http://localhost:3000/api/v4/get-info",
+        url: "https://app.dataforge.so/api/v4/get-info",
         method: "POST",
         contentType: "application/json",
         headers: headers,
